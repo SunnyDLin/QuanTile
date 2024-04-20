@@ -438,4 +438,4 @@ def main(qubits=4, commRequired=True, instant_move=False):
 
 
 if __name__ == '__main__':
-    main(2, commRequired=True, instant_move=True)
+    main(4, commRequired=True, instant_move=True)
