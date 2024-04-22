@@ -30,12 +30,15 @@ from comm_util import Comm
 import serial
 import serial.tools.list_ports
 from tkinter import ttk, messagebox
+from tkinter.font import Font
 import tkinter as tk
+
+# from ImageCache import ImageCache     # ImageCache is not in use due to a bug in label.config(image=None)
+from PIL import Image, ImageTk
 
 import time
 
 from qu_states import GateOperators, GateTypes
-from ImageCache import ImageCache
 
 
 @dataclass
@@ -118,7 +121,7 @@ class StateVectorBlochPlot:
     # Constructor
     #   qubits (type:int) - number of Bloch spheres, range: 1~4
     #   interval (type:int) - minimum time interval between 2 animation frames
-    def __init__(self, qubits=1, interval=200, instant_move=False):
+    def __init__(self, qubits=1, interval=250, instant_move=False):
         if qubits < 1 or qubits > 4:
             raise ValueError("Argument out of range, qubits:" + str(qubits))
 
@@ -153,7 +156,7 @@ class StateVectorBlochPlot:
             self._ax.append(subplot)
             self.zeroVector(i)
 
-        # Create Configurator GUI components
+        # Create Inspector and Configurator GUI components
         listOfGateTypes = [name for name in GateOperators.members()]  # used in combo box
         self.componentTypes = [GateTypes.UNDEFINED] * qubits
         self.comboBoxes = []
@@ -161,7 +164,10 @@ class StateVectorBlochPlot:
         self.matrices = []
 
         # Crete labels
-        label = tk.Label(text="Configurator:", background="white", font=("Helvetica", 15))
+        bold_font = Font(family="Helvetica", size=15, weight="bold")
+        label = tk.Label(text="Inspector:", background="white", font=bold_font)
+        label.place(x=30, y=30)
+        label = tk.Label(text="Configurator:", background="white", font=bold_font)
         label.place(x=30, rely=0.6)
 
         self.multiQubitEnabled = True
@@ -323,7 +329,7 @@ def main(qubits=4, commRequired=True, instant_move=False):
         inputStateMissCount[plot_port] = 0
         blochPlot.updateStateVector((theta, phi), plot_port)
 
-    imageCache = ImageCache()
+    # imageCache = ImageCache()     # ImageCache is not in use due to a bug in label.config(image=None)
 
     def updateGateTypeCallback(gate_type, plot_port):
         # update ComboBox GUI
@@ -336,11 +342,23 @@ def main(qubits=4, commRequired=True, instant_move=False):
         if name is not None:
             blochPlot.comboBoxes[plot_port].set(name)
 
-            image = imageCache.getSymbolImage(name)
+            # image = imageCache.getSymbolImage(name)     # ImageCache is not in use
+            try:
+                image = Image.open(f"images/{name}-symbol.gif")
+                image = ImageTk.PhotoImage(image)  # create Tk compatible image
+            except FileNotFoundError:
+                image = None
+
             blochPlot.symbols[plot_port].config(image=image)
             blochPlot.symbols[plot_port].image = image  # Keep a reference to avoid garbage collection.
 
-            image = imageCache.getMatrixImage(name)
+            # image = imageCache.getMatrixImage(name)     # ImageCache is not in use
+            try:
+                image = Image.open(f"images/{name}-matrix.gif")
+                image = ImageTk.PhotoImage(image)   # create Tk compatible image
+            except FileNotFoundError:
+                image = None
+
             blochPlot.matrices[plot_port].config(image=image)
             blochPlot.matrices[plot_port].image = image  # Keep a reference to avoid garbage collection.
 
@@ -362,14 +380,14 @@ def main(qubits=4, commRequired=True, instant_move=False):
                 try:
                     if tick % 2 == 0:
                         channel.sendStateRequest(channel.uart_in)
-                        if inputStateMissCount[procedurePortIndex] >= 5:
+                        if inputStateMissCount[procedurePortIndex] >= 3:
                             SetDefaultThetaPhi(procedurePortIndex)
                         else:
                             inputStateMissCount[procedurePortIndex] += 1
 
                     if tick % 4 == 1:
                         channel.sendComponentTypeRequest(channel.uart_in)
-                        if componentTypeMissCount[procedurePortIndex] >= 3:
+                        if componentTypeMissCount[procedurePortIndex] >= 2:
                             blochPlot.comboBoxes[procedurePortIndex].set("")
                             blochPlot.componentTypes[procedurePortIndex] = GateTypes.UNDEFINED
                         else:
@@ -401,13 +419,25 @@ def main(qubits=4, commRequired=True, instant_move=False):
                                            "due to incompatibility with single-qubit tiles.")
 
     # This function is called when a
-    def onComboBoxSelect(idx, selected_item):
-        if not blochPlot.multiQubitEnabled and selected_item in multiQubitGateList:
-            image = imageCache.getSymbolImage(selected_item)
+    def onComboBoxSelect(idx, name):
+        if not blochPlot.multiQubitEnabled and name in multiQubitGateList:
+            # image = imageCache.getSymbolImage(name)     # ImageCache is not in use
+            try:
+                image = Image.open(f"images/{name}-symbol.gif")
+                image = ImageTk.PhotoImage(image)  # create Tk compatible image
+            except FileNotFoundError:
+                image = None
+
             blochPlot.symbols[idx].config(image=image)
             blochPlot.symbols[idx].image = image  # Keep a reference to avoid garbage collection.
 
-            image = imageCache.getMatrixImage(selected_item)
+            # image = imageCache.getMatrixImage(name)     # ImageCache is not in use
+            try:
+                image = Image.open(f"images/{name}-matrix.gif")
+                image = ImageTk.PhotoImage(image)   # create Tk compatible image
+            except FileNotFoundError:
+                image = None
+
             blochPlot.matrices[idx].config(image=image)
             blochPlot.matrices[idx].image = image  # Keep a reference to avoid garbage collection.
 
@@ -415,8 +445,8 @@ def main(qubits=4, commRequired=True, instant_move=False):
             blochPlot.componentTypes[idx] = GateTypes.UNDEFINED  # set it UNDEFINED to allow update from tile
             return
 
-        typeID = eval('GateTypes.' + selected_item).value
-        print(f"comboBox{idx} item selected: {selected_item}, {typeID}")
+        typeID = eval('GateTypes.' + name).value
+        print(f"comboBox{idx} item selected: {name}, {typeID}")
         commPorts[idx].sendComponentTypeChangeRequest(typeID, commPorts[idx].uart_in)
 
     blochPlot.setOnComboBoxSelectCallback(onComboBoxSelect)

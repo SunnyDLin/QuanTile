@@ -46,15 +46,33 @@ GateOperators = Enum(
          [1, 0]],       # X
     PAULI_Y =
         [[0, -1j],
-         [1j, 0]],      # Y
+         [1j,  0]],      # Y
     PAULI_Z =
         [[1,  0],
          [0, -1]],      # Z
     HADAMARD =
         [[1/math.sqrt(2.0),  1/math.sqrt(2.0)],
          [1/math.sqrt(2.0), -1/math.sqrt(2.0)]],      # H
+    RX_4 =
+        [[      math.cos(math.pi/4), -1j * math.sin(math.pi/4)],
+         [-1j * math.sin(math.pi/4),       math.cos(math.pi/4)]],
+    RY_4 =
+        [[math.cos(math.pi/4), - math.sin(math.pi/4)],
+         [math.sin(math.pi/4),   math.cos(math.pi/4)]],
+    RZ_4 =
+        [[cmath.exp(-1j * math.pi/4), 0],
+         [0,  cmath.exp(1j * math.pi/4)]],
+    RX_8 =
+        [[      math.cos(math.pi/8), -1j * math.sin(math.pi/8)],
+         [-1j * math.sin(math.pi/8),       math.cos(math.pi/8)]],
+    RY_8 =
+        [[math.cos(math.pi/8), - math.sin(math.pi/8)],
+         [math.sin(math.pi/8),   math.cos(math.pi/8)]],
+    RZ_8 =
+        [[cmath.exp(-1j * math.pi/8), 0],
+         [0,  cmath.exp(1j * math.pi/8)]],
     PHASE =
-        [[1, 0],
+        [[1,  0],
          [0, 1j]],          # P or S
     TWIRL =
         [[1, 0],
@@ -65,10 +83,10 @@ GateOperators = Enum(
          [0, 0, 0, 1],
          [0, 0, 1, 0]],      # CNOT, CX
     CONTROLLED_Z =
-        [[1, 0, 0, 0],
-         [0, 1, 0, 0],
-         [0, 0, 1, 0],
-         [0, 0, 0, -1]],     # CZ
+        [[1,  0,  0,  0],
+         [0,  1,  0,  0],
+         [0,  0,  1,  0],
+         [0,  0,  0, -1]],   # CZ
     SWAP =
         [[1, 0, 0, 0],
          [0, 1, 0, 0],
@@ -93,12 +111,18 @@ GateTypes = Enum(
     PAULI_Y        = 0x03,
     PAULI_Z        = 0x04,
     HADAMARD       = 0x05,
-    PHASE          = 0x06,
-    TWIRL          = 0x07,
-    CONTROLLED_NOT = 0x11,
-    CONTROLLED_Z   = 0x12,
-    SWAP           = 0x13,
-    TOFFOLI        = 0x21,
+    RX_4           = 0x06,
+    RY_4           = 0x07,
+    RZ_4           = 0x08,
+    RX_8           = 0x09,
+    RY_8           = 0x0a,
+    RZ_8           = 0x0b,
+    PHASE          = 0x0e,
+    TWIRL          = 0x0f,
+    CONTROLLED_NOT = 0x41,
+    CONTROLLED_Z   = 0x42,
+    SWAP           = 0x43,
+    TOFFOLI        = 0x81,
 )
 
 class QuantumBitState:

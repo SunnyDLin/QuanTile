@@ -33,7 +33,7 @@ class ImageCache:
                 image = PhotoImage(file=fileName)
                 self._symbol_cache[name] = image
                 return image
-            except FileNotFoundError:
+            except:
                 return None
 
     def getMatrixImage(self, name):
@@ -45,5 +45,5 @@ class ImageCache:
                 image = PhotoImage(file=fileName)
                 self._matrix_cache[name] = image
                 return image
-            except FileNotFoundError:
+            except:
                 return None
