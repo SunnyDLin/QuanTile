@@ -83,7 +83,7 @@ class QuTile:
             self.outState = state
             print("[QuTile] Output state:", self.outState.getBlochSphereState())
 
-            time.sleep(0.001)
+            time.sleep(0.01)
 
     # Service routine
     def serviceThread(self):

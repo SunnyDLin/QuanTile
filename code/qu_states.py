@@ -33,6 +33,27 @@ if is_cpython:
 else:
     from ulab import numpy as np
 
+# Enumeration of component types.  Keys should be all upper case.
+GateTypes = Enum(
+    UNDEFINED      = 0x00,
+    IDENTITY       = 0x01,
+    PAULI_X        = 0x02,
+    PAULI_Y        = 0x03,
+    PAULI_Z        = 0x04,
+    HADAMARD       = 0x05,
+    RX_PI_DIV2     = 0x06,
+    RY_PI_DIV2     = 0x07,
+    RZ_PI_DIV2     = 0x08,
+    RX_PI_DIV4     = 0x09,
+    RY_PI_DIV4     = 0x0a,
+    RZ_PI_DIV4     = 0x0b,
+    PHASE          = 0x0e,
+    TWIRL          = 0x0f,
+    CONTROLLED_NOT = 0x41,
+    CONTROLLED_Z   = 0x42,
+    SWAP           = 0x43,
+    TOFFOLI        = 0x81,
+)
 
 # Definitions of unitary matrices of known quantum operators.
 # This list includes single and multiple qubits.
@@ -53,22 +74,22 @@ GateOperators = Enum(
     HADAMARD =
         [[1/math.sqrt(2.0),  1/math.sqrt(2.0)],
          [1/math.sqrt(2.0), -1/math.sqrt(2.0)]],      # H
-    RX_4 =
+    RX_PI_DIV2 =
         [[      math.cos(math.pi/4), -1j * math.sin(math.pi/4)],
          [-1j * math.sin(math.pi/4),       math.cos(math.pi/4)]],
-    RY_4 =
+    RY_PI_DIV2 =
         [[math.cos(math.pi/4), - math.sin(math.pi/4)],
          [math.sin(math.pi/4),   math.cos(math.pi/4)]],
-    RZ_4 =
+    RZ_PI_DIV2 =
         [[cmath.exp(-1j * math.pi/4), 0],
          [0,  cmath.exp(1j * math.pi/4)]],
-    RX_8 =
+    RX_PI_DIV4 =
         [[      math.cos(math.pi/8), -1j * math.sin(math.pi/8)],
          [-1j * math.sin(math.pi/8),       math.cos(math.pi/8)]],
-    RY_8 =
+    RY_PI_DIV4 =
         [[math.cos(math.pi/8), - math.sin(math.pi/8)],
          [math.sin(math.pi/8),   math.cos(math.pi/8)]],
-    RZ_8 =
+    RZ_PI_DIV4 =
         [[cmath.exp(-1j * math.pi/8), 0],
          [0,  cmath.exp(1j * math.pi/8)]],
     PHASE =
@@ -103,27 +124,6 @@ GateOperators = Enum(
          [0, 0, 0, 0, 0, 0, 1, 0]],      # CCNOT, CCX, TOFF
     )
 
-# Enumeration of component types.  Keys should be all upper case.
-GateTypes = Enum(
-    UNDEFINED      = 0x00,
-    IDENTITY       = 0x01,
-    PAULI_X        = 0x02,
-    PAULI_Y        = 0x03,
-    PAULI_Z        = 0x04,
-    HADAMARD       = 0x05,
-    RX_4           = 0x06,
-    RY_4           = 0x07,
-    RZ_4           = 0x08,
-    RX_8           = 0x09,
-    RY_8           = 0x0a,
-    RZ_8           = 0x0b,
-    PHASE          = 0x0e,
-    TWIRL          = 0x0f,
-    CONTROLLED_NOT = 0x41,
-    CONTROLLED_Z   = 0x42,
-    SWAP           = 0x43,
-    TOFFOLI        = 0x81,
-)
 
 class QuantumBitState:
     def __init__(self, theta=0.0, phi=0.0):
