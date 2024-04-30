@@ -127,8 +127,24 @@ GateOperators = Enum(
 
 class QuantumBitState:
     def __init__(self, theta=0.0, phi=0.0):
-        if theta < 0.0 or theta > math.pi or phi < 0.0 or phi >= 2 * math.pi:
-            raise ValueError("Initial value out of range (theta, phi)=({}, {})".format(theta, phi))
+        # range:
+        #   0.0 <= theta <= math.pi
+        #   0.0 <= phi   <= 2 * math.pi:
+        while theta < 0.0:
+            theta += math.pi * 2
+        while theta > math.pi * 2:
+            theta -= math.pi * 2
+        if theta > math.pi:
+            # mirror on Z axis
+            theta = math.pi * 2 - theta
+            phi += math.pi
+        while phi < 0.0:
+            phi += math.pi * 2
+        while phi > math.pi * 2:
+            phi -= math.pi * 2
+        # if theta < 0.0 or theta > math.pi or phi < 0.0 or phi >= 2 * math.pi:
+        #     raise ValueError("Initial value out of range (theta, phi)=({}, {})".format(theta, phi))
+
         self.theta = theta
         self.phi = phi
 
