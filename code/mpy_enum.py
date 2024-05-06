@@ -1,3 +1,23 @@
+################################################################################
+# QuanTile Proprietary License
+#
+# Copyright 2024 Sunny Lin
+#
+# All rights reserved.
+# 
+# The hardware and software designs associated with QuanTile are the proprietary
+# property of Sunny Lin Permission is hereby granted to schools and educational
+# institutions to use the Designs for educational purposes only. Any use of the
+# designs for commercial purposes, including but not limited to reproduction,
+# modification, distribution, or incorporation into other products, without the
+# express written permission of Sunny Lin is strictly prohibited.
+# 
+# For inquiries regarding commercial use, please contact
+# 
+# Sunny Lin
+# sunny.khh@gmail.com
+################################################################################
+
 # ------------------------------------------------------------------------------
 # This module is to implement Enum class for the functions needed for QuanTile.
 # Enum class is not available in MicroPython as a built-in package.
